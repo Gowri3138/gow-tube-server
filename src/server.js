@@ -33,6 +33,10 @@ app.use("/api/channels", channelRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/uploads", uploadRoutes);
 
+app.get("/isworking",(req,res)=>{
+  res.send("api is working");
+});
+
 app.listen(PORT, () => {
   mongoConnection();
   console.log("Server is listening on Port: " + PORT);
