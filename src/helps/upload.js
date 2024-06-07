@@ -1,46 +1,56 @@
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+const dotenv = require("dotenv");
 
-const coverStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dest = path.join(__dirname, "../assets/covers");
-    cb(null, dest);
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.filename);
+// Load environment variables
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Cloudinary storage for different file types
+const coverStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "covers",
+    format: async (req, file) => "jpg", // Format can be changed as needed
+    public_id: (req, file) => file.originalname.split('.')[0] + '-' + Date.now(), // Unique file name
   },
 });
 
-const profileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dest = path.join(__dirname, "../assets/profiles");
-    cb(null, dest);
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.filename);
-  },
-});
-
-const videoStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dest = path.join(__dirname, "../assets/videos");
-    cb(null, dest);
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.filename);
+const profileStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "profiles",
+    format: async (req, file) => "jpg",
+    public_id: (req, file) => file.originalname.split('.')[0] + '-' + Date.now(),
   },
 });
 
-const bannerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dest = path.join(__dirname, "../assets/banners");
-    cb(null, dest);
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.filename);
+const videoStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "videos",
+    format: async (req, file) => "mp4",
+    public_id: (req, file) => file.originalname.split('.')[0] + '-' + Date.now(),
   },
 });
 
+const bannerStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "banners",
+    format: async (req, file) => "jpg",
+    public_id: (req, file) => file.originalname.split('.')[0] + '-' + Date.now(),
+  },
+});
+
+// Multer middleware
 const uploadCover = multer({ storage: coverStorage });
 const uploadProfile = multer({ storage: profileStorage });
 const uploadVideo = multer({ storage: videoStorage });
