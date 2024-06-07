@@ -56,8 +56,10 @@ const getVideosByChannelId = async (req, res, next) => {
     next(error);
   }
 };
-
 const createVideo = async (req, res, next) => {
+  res.send({body: req.body})
+ };
+/*const createVideo = async (req, res, next) => {
   try {
     console.log("Request body:", req.body); 
     const l_video = new Video({ channelId: req.channel.id, ...req.body });
@@ -72,11 +74,11 @@ const createVideo = async (req, res, next) => {
       subscribers: l_channel.subscribers,
     };
 
-    res.status(200).json({ ...savedVideo._doc, ...channel });
+    res.status.send({body:req.body})
   } catch (error) {
-    next(error);
+    res.status.send({body:req.body})
   }
-};
+};*/
 
 const updateVideo = async (req, res, next) => {
   try {
