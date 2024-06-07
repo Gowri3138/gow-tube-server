@@ -59,6 +59,7 @@ const getVideosByChannelId = async (req, res, next) => {
 
 const createVideo = async (req, res, next) => {
   try {
+    console.log("Request body:", req.body); 
     const l_video = new Video({ channelId: req.channel.id, ...req.body });
     const savedVideo = await l_video.save();
     const l_channel = await Channel.findById(savedVideo.channelId);
