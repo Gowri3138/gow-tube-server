@@ -1,5 +1,6 @@
 const Video = require("../models/Video");
 const Channel = require("../models/Channel");
+const logger = require("../logger/logger");
 
 const getVideos = async (req, res, next) => {
   const search = req.query.search;
@@ -18,6 +19,7 @@ const getVideos = async (req, res, next) => {
       res.status(203).json("No video record found.");
     }
   } catch (error) {
+    logger.error('Error fetching videos:', error);
     next(error);
   }
 };
@@ -38,6 +40,7 @@ const getVideo = async (req, res, next) => {
     const { _id, ...channel } = l_channel._doc;
     res.status(200).json({ ...video._doc, ...channel });
   } catch (error) {
+    logger.error('Error fetching video:', error);
     next(error);
   }
 };
@@ -53,15 +56,14 @@ const getVideosByChannelId = async (req, res, next) => {
       res.status(203).json("No video record found.");
     }
   } catch (error) {
+    logger.error('Error fetching videos by channel ID:', error);
     next(error);
   }
 };
+
 const createVideo = async (req, res, next) => {
-  res.send({body: req.body})
- };
-/*const createVideo = async (req, res, next) => {
   try {
-    console.log("Request body:", req.body); 
+    logger.info('Creating video with data:', req.body);
     const l_video = new Video({ channelId: req.channel.id, ...req.body });
     const savedVideo = await l_video.save();
     const l_channel = await Channel.findById(savedVideo.channelId);
@@ -76,9 +78,10 @@ const createVideo = async (req, res, next) => {
 
     res.status.send({body:req.body})
   } catch (error) {
+    logger.error('Error creating video:', error);
     res.status.send({body:req.body})
   }
-};*/
+};
 
 const updateVideo = async (req, res, next) => {
   try {
@@ -102,6 +105,7 @@ const updateVideo = async (req, res, next) => {
       return res.status(403).json("Update videos other channels not allowed.");
     }
   } catch (error) {
+    logger.error('Error updating video:', error);
     next(error);
   }
 };
