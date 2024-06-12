@@ -76,12 +76,13 @@ const createVideo = async (req, res, next) => {
       subscribers: l_channel.subscribers,
     };
 
-    res.status.send({body:req.body})
+    res.status(200).json(savedVideo);
   } catch (error) {
     logger.error('Error creating video:', error);
-    res.status.send({body:req.body})
+    res.status(500).json({ error: 'Failed to create video' });
   }
 };
+
 
 const updateVideo = async (req, res, next) => {
   try {
