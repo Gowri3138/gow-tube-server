@@ -11,18 +11,22 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.split(' ')[1];
-    logger.info('Token found in Authorization header');
+    logger.info('Token found in Authorization header:', token);
   } else {
     // If no Authorization header, check cookies for accessToken
     const cookies = new Cookies(req, res);
     token = cookies.get('accessToken');
     if (token) {
-      logger.info('Token found in cookies');
+      logger.info('Token found in cookies:', token);
     } else {
       logger.warn('No token found in Authorization header or cookies');
       return res.status(401).json("You are not authenticated.");
     }
   }
+
+  // Decode the token to inspect its contents
+  const decodedToken = jwt.decode(token);
+  logger.info('Decoded token:', decodedToken);
 
   // Verify the token
   jwt.verify(token, process.env.SECRET_JWT, (error, user) => {
