@@ -11,15 +11,17 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.split(' ')[1];
+    logger.info('Token found in Authorization header');
   } else {
     // If no Authorization header, check cookies for accessToken
     const cookies = new Cookies(req, res);
     token = cookies.get('accessToken');
-  }
-
-  if (!token) {
-    logger.warn('No token found in Authorization header or cookies');
-    return res.status(401).json("You are not authenticated.");
+    if (token) {
+      logger.info('Token found in cookies');
+    } else {
+      logger.warn('No token found in Authorization header or cookies');
+      return res.status(401).json("You are not authenticated.");
+    }
   }
 
   // Verify the token
@@ -35,4 +37,3 @@ const verifyToken = (req, res, next) => {
 };
 
 module.exports = verifyToken;
-
